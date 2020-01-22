@@ -1,0 +1,14 @@
+---
+
+- name: instalação de repos e pacotes (Debian)
+  include_tasks: Debian-family.yml
+  when:
+    - ansible_facts['distribution_file_variety'] == "Debian"
+    - ansible_facts['distribution_major_version']|int >= 8
+
+- name: instalação de repos e pacotes (RedHat)
+  include_tasks: RedHat-family.yml
+  when:
+    - ansible_facts['distribution_file_variety'] == "RedHat"
+    - ansible_facts['distribution_major_version']|int >= 6
+

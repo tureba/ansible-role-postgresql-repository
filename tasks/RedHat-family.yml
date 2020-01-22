@@ -1,0 +1,38 @@
+---
+
+- name: "desinstala PostgreSQL (CentOS/RHEL 6 => 8.4; 7 => 9.2; 8 => 10)"
+  yum:
+    name:
+      - postgresql
+      - postgresql-server
+    state: absent
+
+- name: "mascara PostgreSQL nativo (CentOS/RHEL 6 => 8.4; 7 => 9.2; 8 => 10)"
+  ini_file:
+    path: "/etc/yum.repos.d/CentOS-Base.repo"
+    section: "{{ item }}"
+    option: "exclude"
+    value: "postgresql*"
+  loop:
+    - base
+    - updates
+
+- name: instala EPEL
+  yum:
+    name: epel-release
+    state: latest
+
+- name: instala PGDG
+  vars:
+    ver: "{{ ansible_distribution_major_version }}"
+    arch: "{{ ansible_userspace_architecture }}"
+  yum:
+    name: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{ ver }}-{{ arch }}/pgdg-redhat-repo-latest.noarch.rpm"
+    state: latest
+
+- name: instala postgres (cliente)
+  yum:
+    name: "postgresql{{ postgres_common_major_version }}"
+    state: latest
+  when: "postgres_common_client|bool"
+
