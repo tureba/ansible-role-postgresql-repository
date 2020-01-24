@@ -7,7 +7,7 @@
       - postgresql-server
     state: absent
 
-- name: "mascara PostgreSQL nativo (CentOS/RHEL 6 => 8.4; 7 => 9.2; 8 => 10)"
+- name: "mascara PostgreSQL nativo (CentOS/RHEL 6 => 8.4; 7 => 9.2)"
   ini_file:
     path: "/etc/yum.repos.d/CentOS-Base.repo"
     section: "{{ item }}"
@@ -16,6 +16,12 @@
   loop:
     - base
     - updates
+  when: "ansible_facts['distribution_major_version']|int < 8"
+
+#TODO: substituir pelo módulo dnf quando ele conseguir trabalhar com módulos de appstreams
+- name: "desabilita o módulo do AppStream incompatível com PGDG (CentOS/RHEL 8 => 10)"
+  command: dnf -qy module disable postgresql
+  when: "ansible_facts['distribution_major_version']|int >= 8"
 
 - name: instala EPEL
   yum:
