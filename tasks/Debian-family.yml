@@ -4,7 +4,6 @@
   apt_key:
     url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
     id: "0x7FCC7D46ACCC4CF8"
-  state: present
 
 - name: register APT repository
   apt_repository:
